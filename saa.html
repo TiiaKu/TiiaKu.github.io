@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Säätiedot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 1.6;
+            padding: 20px;
+        }
+        nav {
+            display: flex;
+            gap: 15px;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    
+        nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    
+        nav a:hover {
+            background-color: #ddd;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .city {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            flex: 1 1 300px; 
+        }
+        h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Säätiedot</h1>
+    <nav>
+        <a href="kurssi.html">Etusivu</a>
+        <a href="toteutus.html">Toteutus</a>
+        <a href="tapahtumat.html">Tapahtumat</a>
+        <a href="saa.html">Sää</a>
+        <a href="junat.html">Junat</a>
+    </nav>
+    <div class="container" id="saatiedot">
+    </div>
+
+    <script>
+        const apiKey = '665ecd56dfc08dbb50feb8b8f5034e28'; 
+        const cities = ['Helsinki', 'Tampere'];
+
+        cities.forEach(city => {
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},FI&appid=${apiKey}&units=metric`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Verkkovirhe: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const weather = {
+                    name: data.name,
+                    temperature: data.main.temp,
+                    description: data.weather[0].description
+                };
+                addWeatherToDOM(weather);
+            })
+            .catch(error => {
+                console.error('Virhe säätiedon hakemisessa:', error);
+                document.getElementById("saatiedot").innerHTML += `<p>Tietoa ei pystytä hakemaan kaupungista: ${city}</p>`;
+            });
+        });
+
+        function addWeatherToDOM(weather) {
+            const container = document.getElementById("saatiedot");
+            container.innerHTML += `
+                <div class="city">
+                    <h2>${weather.name}</h2>
+                    <p>lämpötila: ${weather.temperature} °C</p>
+                    <p>kuvaus: ${weather.description}</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
