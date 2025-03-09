@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Junat Tampereelle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Etusivu</a>
+        <a href="toteutus.html">Toteutus</a>
+        <a href="tapahtumat.html">Tapahtumat</a>
+        <a href="saa.html">Sää</a>
+        <a href="junat.html">Junat</a>
+    </nav>
+
+    <h1>Junat Tampereelle</h1>
+    <p>Tässä ovat Helsingistä Tampereelle menevien tai Tampereen kautta kulkevien junien aikataulut:</p>
+
+    <table id="trainTable">
+        <tr>
+            <th>Junanumero</th>
+            <th>Kategoria</th>
+            <th>Lähtöasema</th>
+            <th>Määränpää</th>
+            <th>Aikataulu</th>
+        </tr>
+        <!-- Junat lisätään tänne JavaScriptillä -->
+    </table>
+
+    <script>
+        // Hae junatiedot suoraan rajapinnasta
+        fetch("https://rata.digitraffic.fi/api/v1/live-trains/station/tpe?departing_trains=10&include_nonstopping=false")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Virhe haettaessa dataa: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const table = document.getElementById("trainTable");
+
+                data.forEach(train => {
+                    // Tarkistetaan, onko juna pitkänmatkanjuna
+                    if (train.trainCategory === "Long-distance") {
+                        const departureRow = train.timeTableRows.find(row => row.type === "DEPARTURE" && row.stationShortCode === "TPE");
+                        if (departureRow) {
+                            const departureTime = new Date(departureRow.scheduledTime);
+                            const formattedTime = `${departureTime.toLocaleDateString('fi-FI')} klo ${departureTime.toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' })}`;
+
+                            // Lähtöasema ja määränpää
+                            const startStation = train.timeTableRows[0].stationShortCode;
+                            const endStation = train.timeTableRows[train.timeTableRows.length - 1].stationShortCode;
+
+                            // Lisää junan tiedot taulukkoon
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${train.trainNumber}</td>
+                                <td>${train.trainCategory}</td>
+                                <td>${startStation}</td>
+                                <td>${endStation}</td>
+                                <td>${formattedTime}</td>
+                            `;
+                            table.appendChild(row);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error("Virhe haettaessa junadatoja:", error);
+                const table = document.getElementById("trainTable");
+                const errorRow = document.createElement("tr");
+                errorRow.innerHTML = `<td colspan="5">Tietoja ei voitu hakea.</td>`;
+                table.appendChild(errorRow);
+            });
+    </script>
+</body>
+</html>
