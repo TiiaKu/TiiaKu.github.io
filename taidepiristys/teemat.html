@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+
+    <title>Paint & Wine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'cabin', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #CEE3F6;
+            background-size: cover;
+            background-position: center;
+            color: black;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            height: 100px;
+            position: relative;
+        }    
+    
+
+        .logo {
+            font-family: 'Abril Fatface', cursive;
+            font-size: 2.5rem; 
+            margin-top: 0;
+        }
+
+        nav {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: black;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .content {
+            flex: 1;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .content img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background-color: #CEE3F6;
+            color: black;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+                flex-direction: column;
+                gap: 0;
+                background-color: #7e87e8;
+                position: absolute;
+                top: 120px;
+                right: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .menu-icon {
+                display: block;
+                color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">taidepiristys</div>
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+        <nav id="nav-menu">
+            <a href="home.html">Etusivu</a>
+            <a href="hinnasto.html">Hinnasto</a>
+            <a href="about.html">Meistä</a>
+            <a href="teemat.html">Teemat</a>
+            <a href="contact.html">Ota yhteyttä</a>
+        </nav>
+    </header>
+
+    <div class="content">
+    </div>
+
+    <footer>
+        &copy; 2025 Paint & Wine. All rights reserved.
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navMenu = document.getElementById('nav-menu');
+            navMenu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
